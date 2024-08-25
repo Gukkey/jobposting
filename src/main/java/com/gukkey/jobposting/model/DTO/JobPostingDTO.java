@@ -1,6 +1,5 @@
 package com.gukkey.jobposting.model.DTO;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import lombok.Getter;

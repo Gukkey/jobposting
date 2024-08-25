@@ -1,43 +1,48 @@
 package com.gukkey.jobposting.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.gukkey.jobposting.model.DTO.JobPostingDTO;
 import com.gukkey.jobposting.model.response.JobPostingResponse;
 import com.gukkey.jobposting.service.JobPostingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/job")
+@Tag(name = "Job Postings", description = "API for managing job postings")
 public class JobPostingController {
 
     @Autowired
-    JobPostingService jobPostingService;
-    
-    @PostMapping("/job/post")
-    public JobPostingResponse postJobPosting(@RequestBody JobPostingDTO jobPostingDTO){
-        return jobPostingService.createJobPosting(jobPostingDTO);
+    private JobPostingService jobPostingService;
+
+    @PostMapping
+    @Operation(summary = "Create a new job posting")
+    public ResponseEntity<JobPostingResponse> createJobPosting(@RequestBody JobPostingDTO jobPostingDTO) {
+        JobPostingResponse response = jobPostingService.createJobPosting(jobPostingDTO);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
-    @GetMapping("/job/{id}")
-    public JobPostingResponse getJobPostingResponse(@PathVariable long id) {
-        return jobPostingService.getJobPosting(id);
+    @PutMapping("/{id}")
+    @Operation(summary = "Edit an existing job posting")
+    public ResponseEntity<JobPostingResponse> editJobPosting(@PathVariable long id, @RequestBody JobPostingDTO jobPostingDTO) {
+        JobPostingResponse response = jobPostingService.editJobPosting(id, jobPostingDTO);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
-    @PutMapping("/job/edit/{id}")
-    public JobPostingResponse editJobPosting(@RequestBody JobPostingDTO jobPostingDTO, @PathVariable long id) {
-        return jobPostingService.editJobPosting(id, jobPostingDTO);
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a job posting by ID")
+    public ResponseEntity<JobPostingResponse> getJobPosting(@PathVariable long id) {
+        JobPostingResponse response = jobPostingService.getJobPosting(id);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
-    @DeleteMapping("/job/delete/{id}")
-    public JobPostingResponse deleteJobPosting(@PathVariable long id) {
-        return jobPostingService.deleteJobPostingResponse(id);
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a job posting")
+    public ResponseEntity<JobPostingResponse> deleteJobPosting(@PathVariable long id) {
+        JobPostingResponse response = jobPostingService.deleteJobPostingResponse(id);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 }

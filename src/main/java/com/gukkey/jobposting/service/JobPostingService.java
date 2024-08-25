@@ -46,8 +46,6 @@ public class JobPostingService {
     }
 
     public JobPostingResponse getJobPosting(long id) {
-        System.out.println("ID: ");
-        System.out.println("----------------------------------------------------------------------------------------------------------");
         Optional<JobPosting> jobPosting = jobPostingRepository.findById(id);
         JobPostingResponse jobPostingResponse = null;
         if(!jobPosting.isPresent()) {
